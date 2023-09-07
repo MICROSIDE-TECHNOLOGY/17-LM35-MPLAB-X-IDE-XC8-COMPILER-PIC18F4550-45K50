@@ -1,14 +1,14 @@
 /**
-  @Generated PIC10 / PIC12 / PIC16 / PIC18 MCUs Header File
+  @Generated PIC10 / PIC12 / PIC16 / PIC18 MCUs Source File
 
   @Company:
     Microchip Technology Inc.
 
   @File Name:
-    mcc.h
+    mcc.c
 
   @Summary:
-    This is the mcc.h file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs
+    This is the mcc.c file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs
 
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
@@ -44,47 +44,35 @@
     SOFTWARE.
 */
 
-#ifndef MCC_H
-#define	MCC_H
-#include <xc.h>
-#include "device_config.h"
-#include "pin_manager.h"
-#include <stdint.h>
-#include <stdbool.h>
-#include <conio.h>
-#include "interrupt_manager.h"
-#include "tmr0.h"
-#include "adc.h"
+#include "mcc.h"
 
 
+void SYSTEM_Initialize(void)
+{
 
-/**
- * @Param
-    none
- * @Returns
-    none
- * @Description
-    Initializes the device to the default states configured in the
- *                  MCC GUI
- * @Example
-    SYSTEM_Initialize(void);
- */
-void SYSTEM_Initialize(void);
+    PIN_MANAGER_Initialize();
+    OSCILLATOR_Initialize();
+    CCP2_Initialize();
+    ADC_Initialize();
+}
 
-/**
- * @Param
-    none
- * @Returns
-    none
- * @Description
-    Initializes the oscillator to the default states configured in the
- *                  MCC GUI
- * @Example
-    OSCILLATOR_Initialize(void);
- */
-void OSCILLATOR_Initialize(void);
+void OSCILLATOR_Initialize(void)
+{
+    // SCS FOSC; IDLEN disabled; IRCF 16MHz; 
+    OSCCON = 0x70;
+    // INTSRC INTRC_31_25KHz; PLLEN disabled; PRISD disabled; SOSCGO disabled; 
+    OSCCON2 = 0x00;
+    // SPLLMULT 3xPLL; TUN 0; 
+    OSCTUNE = 0x80;
+    // ACTSRC SOSC; ACTUD enabled; ACTEN disabled; 
+    ACTCON = 0x00;
+    // Wait for PLL to stabilize
+    while(PLLRDY == 0)
+    {
+    }
+}
 
-#endif	/* MCC_H */
+
 /**
  End of File
 */

@@ -42,41 +42,40 @@
  */
 
 #include "mcc_generated_files/mcc.h"
+#include <stdio.h>
+#include "lcd.h"
 
-/*
-                         Main application
- */
+char Stemp[20];
+
 void main(void) {
     // Initialize the device
     SYSTEM_Initialize();
-
     // If using interrupts in PIC18 High/Low Priority Mode you need to enable the Global High and Low Interrupts
     // If using interrupts in PIC Mid-Range Compatibility Mode you need to enable the Global and Peripheral Interrupts
     // Use the following macros to:
 
     // Enable the Global Interrupts
-    INTERRUPT_GlobalInterruptEnable();
+    //INTERRUPT_GlobalInterruptEnable();
 
     // Disable the Global Interrupts
     //INTERRUPT_GlobalInterruptDisable();
 
     // Enable the Peripheral Interrupts
-    INTERRUPT_PeripheralInterruptEnable();
+    //INTERRUPT_PeripheralInterruptEnable();
 
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
-
+    __delay_ms(1000);
+    Lcd_Init();
     while (1) {
-
-
-        while (Control_LAT == 0);
-        int ValorPot = ADC_GetConversion(channel_AN3);
-        __delay_us(400);
-        for (int i = 0; i < ValorPot; i++) {
-            __delay_us(1); //0°
-        }
-        Control_SetLow();
-
+        float temperatura = ADC_GetConversion(channel_AN3)*0.488;
+        sprintf(Stemp, "%.1f", temperatura);
+        Lcd_Clear();
+        Lcd_Set_Cursor(1, 1);
+        Lcd_Write_String("Temperatura:");
+        Lcd_Set_Cursor(2, 1);
+        Lcd_Write_String(Stemp);
+        __delay_ms(100);
     }
 }
 /**

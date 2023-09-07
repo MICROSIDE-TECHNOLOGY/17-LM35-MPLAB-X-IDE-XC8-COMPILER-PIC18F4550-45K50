@@ -1,13 +1,14 @@
 /*
  * File:   main.c
- * Author: Enrique
+ * Author: Microside Technology
  *
- * Created on 27 de noviembre de 2020, 02:01 AM
+ * Created on 27 de noviembre de 2020, 02:03 AM
  */
 // CONFIG1L
-#pragma config PLLDIV = 1       // PLL Prescaler Selection bits (Divide by 5 (20 MHz oscillator input))
+#pragma config PLLDIV = 1       // PLL Prescaler Selection bits (No prescale (4 MHz oscillator input drives PLL directly))
 #pragma config CPUDIV = OSC1_PLL2// System Clock Postscaler Selection bits ([Primary Oscillator Src: /1][96 MHz PLL Src: /2])
 #pragma config USBDIV = 1       // USB Clock Selection bit (used in Full-Speed USB mode only; UCFG:FSEN = 1) (USB clock source comes directly from the primary oscillator block with no postscale)
+
 // CONFIG1H
 #pragma config FOSC = HSPLL_HS  // Oscillator Selection bits (HS oscillator, PLL enabled (HSPLL))
 #pragma config FCMEN = OFF      // Fail-Safe Clock Monitor Enable bit (Fail-Safe Clock Monitor disabled)
@@ -59,62 +60,38 @@
 
 #define _XTAL_FREQ 48000000
 #include <xc.h>
-#include <pic18f4550.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <pic18f4550.h>
+#include "LCD.h"
 
-uint16_t ReadADC(void);
+
+char Stemp[20];
+float temp;
+void InitPorts(void);
 void ADCInit(void);
-void Timer0_Init(void);
-void InitPort(void);
-void delay_us(uint16_t uS);
-int SUBE = 1;
-uint16_t DUTY;
+uint16_t ReadADC(void);
 
 void main(void) {
-    InitPort();
-    Timer0_Init();
+    InitPorts();
     ADCInit();
+    LCD_Init();
+    
     while (1) {
-        while (LATCbits.LATC2 == 0);
-        DUTY = ReadADC();
-        __delay_us(400);
-        for (int i = 0; i < DUTY; i++) {
-            __delay_us(1);
-        }
-        LATCbits.LATC2 = 0;
-
+        temp = ReadADC()*0.488;
+        LCD_String_xy(1, 0, "TEMPERATURA:");
+        sprintf(Stemp, "%0.3f", temp);
+        LCD_String_xy(2, 0, Stemp);
+        __delay_ms(1000);
+        LCD_Clear();
     }
     return;
 }
 
-void InitPort(void) {
+void InitPorts(void) {
     ADCON1bits.PCFG = 0x0B;
-    LATC = 0;
-    TRISCbits.RC2 = 0;
     LATA = 0;
-}
-
-void Timer0_Init(void) {
-    INTCONbits.GIE = 0;
-    T0CON = 0x91;
-
-    INTCONbits.TMR0IF = 0;
-    INTCONbits.TMR0IE = 1;
-    TMR0IP = 1;
-    TMR0 = 5535;
-    TMR0ON = 1;
-
-    INTCONbits.PEIE = 1;
-    INTCONbits.GIE = 1;
-}
-
-void __interrupt(high_priority) ISR(void) {
-    if (TMR0IF) {
-        LATCbits.LATC2 = 1;
-        TMR0 = 5535;
-        INTCONbits.TMR0IF = 0;
-    }
 }
 
 void ADCInit(void) {
@@ -125,8 +102,8 @@ void ADCInit(void) {
 
 uint16_t ReadADC(void) {
     uint16_t result;
-    ADCON0bits.GO_DONE = 1; //  Inicia la COnversió AD.
-    while (ADCON0bits.GO_DONE); //  Espera a que termine la conversión AD.
+    ADCON0bits.GO_DONE = 1;
+    while (ADCON0bits.GO_DONE);
     result = ((ADRESH << 8) + ADRESL);
     return (result);
 }

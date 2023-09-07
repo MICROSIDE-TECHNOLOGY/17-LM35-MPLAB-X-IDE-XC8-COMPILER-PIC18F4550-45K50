@@ -1,6 +1,6 @@
 /*
  * File:   LCD.c
- * Author: Enrique
+ * Author: Microside Technology
  *
  * Created on 25 de noviembre de 2020, 01:50 PM
  */

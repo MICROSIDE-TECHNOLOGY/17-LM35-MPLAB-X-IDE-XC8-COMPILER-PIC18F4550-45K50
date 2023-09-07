@@ -15,7 +15,7 @@ jobs:
           gist_url: https://gist.github.com/microside-mx/7422a9e86c668bb20209c4bfa68d94f1
           gist_title: 17-MPLAB-TemperaturaLM35-4550.c
           gist_description: Prácticas MPLABX
-          github_file: Proyecto\PIC18F4550\17_LM35.X\main.c
+          github_file: Proyecto/PIC18F4550/17_LM35.X/main.c
           file_encoding: ISO-8859-1
     #PIC18F45K50
       - name: Checkout
@@ -27,5 +27,5 @@ jobs:
           gist_url: https://gist.github.com/microside-mx/4e1f88035f0df6ac998e531e3e0b86ab
           gist_title: 17-MPLAB-TemperaturaLM35.c
           gist_description: Prácticas MPLABX
-          github_file: Proyecto\PIC18F45K50\17_LM35.X\main.c
+          github_file: Proyecto/PIC18F45K50/17_LM35.X/main.c
           file_encoding: ISO-8859-1

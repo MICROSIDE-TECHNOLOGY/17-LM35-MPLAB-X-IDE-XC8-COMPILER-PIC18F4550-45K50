@@ -19,63 +19,51 @@
  */
 
 /*
-    (c) 2018 Microchip Technology Inc. and its subsidiaries. 
-    
-    Subject to your compliance with these terms, you may use Microchip software and any 
-    derivatives exclusively with Microchip products. It is your responsibility to comply with third party 
-    license terms applicable to your use of third party software (including open source software) that 
+    (c) 2018 Microchip Technology Inc. and its subsidiaries.
+
+    Subject to your compliance with these terms, you may use Microchip software and any
+    derivatives exclusively with Microchip products. It is your responsibility to comply with third party
+    license terms applicable to your use of third party software (including open source software) that
     may accompany Microchip software.
-    
-    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER 
-    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY 
-    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS 
+
+    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
+    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY
+    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS
     FOR A PARTICULAR PURPOSE.
-    
-    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
-    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
-    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP 
-    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO 
-    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL 
-    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
-    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
+
+    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
+    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
+    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP
+    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO
+    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL
+    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT
+    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS
     SOFTWARE.
  */
 
+#include "lcd.h"
 #include "mcc_generated_files/mcc.h"
 #include <stdio.h>
-#include "lcd.h"
 
 char Stemp[20];
 
-void main(void) {
-    // Initialize the device
-    SYSTEM_Initialize();
-    // If using interrupts in PIC18 High/Low Priority Mode you need to enable the Global High and Low Interrupts
-    // If using interrupts in PIC Mid-Range Compatibility Mode you need to enable the Global and Peripheral Interrupts
-    // Use the following macros to:
+void main( void )
+{
 
-    // Enable the Global Interrupts
-    //INTERRUPT_GlobalInterruptEnable();
+    SYSTEM_Initialize();                                              // Configura el dispositivo
 
-    // Disable the Global Interrupts
-    //INTERRUPT_GlobalInterruptDisable();
+    __delay_ms( 1000 );
 
-    // Enable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptEnable();
-
-    // Disable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptDisable();
-    __delay_ms(1000);
-    Lcd_Init();
-    while (1) {
-        float temperatura = ADC_GetConversion(channel_AN3)*0.488;
-        sprintf(Stemp, "%.1f", temperatura);
+    Lcd_Init();                                                       // Configura la pantalla LCD
+    while ( 1 ) {
+        float temperatura = ADC_GetConversion( channel_AN3 ) * 0.488; // Convierte el valor analógico a °C
+        sprintf( Stemp, "%.1f", temperatura );                        // Convierte el valor a un arreglo de caracteres
         Lcd_Clear();
-        Lcd_Set_Cursor(1, 1);
-        Lcd_Write_String("Temperatura:");
-        Lcd_Set_Cursor(2, 1);
-        Lcd_Write_String(Stemp);
-        __delay_ms(100);
+        Lcd_Set_Cursor( 1, 1 );                                       // Mueve el cursor a la posición 1,1
+        Lcd_Write_String( "Temperatura:" );
+        Lcd_Set_Cursor( 2, 1 );
+        Lcd_Write_String( Stemp );
+        __delay_ms( 100 );
     }
 }
 /**

@@ -56,16 +56,13 @@ void main( void )
 
     Lcd_Init();                                                       // Configura la pantalla LCD
     while ( 1 ) {
-        float temperatura = ADC_GetConversion( channel_AN3 ) * 0.488; // Convierte el valor analÃ³gico a Â°C
+        float temperatura = ADC_GetConversion( channel_AN3 ) * 0.488; // Convierte el valor analógico a °C
         sprintf( Stemp, "%.1f", temperatura );                        // Convierte el valor a un arreglo de caracteres
         Lcd_Clear();
-        Lcd_Set_Cursor( 1, 1 );                                       // Mueve el cursor a la posiciÃ³n 1,1
+        Lcd_Set_Cursor( 1, 1 );                                       // Mueve el cursor a la posición 1,1
         Lcd_Write_String( "Temperatura:" );
         Lcd_Set_Cursor( 2, 1 );
         Lcd_Write_String( Stemp );
         __delay_ms( 100 );
     }
 }
-/**
- End of File
- */
